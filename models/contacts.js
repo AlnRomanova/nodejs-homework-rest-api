@@ -41,13 +41,11 @@ const removeContact = async (contactId) => {
     return contacts;
 };
 
-const addContact = async ({ name, email, phone }) => {
+const addContact = async (body) => {
   const contacts = await listContacts();
   const newContact = {
     id: shortid.generate(),
-    name,
-    email,
-    phone,
+   ...body
   };
 
   contacts.push(newContact);
@@ -57,13 +55,13 @@ const addContact = async ({ name, email, phone }) => {
 
 const updateContact = async (contactId, body) => {
   const contacts = await listContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
+  const index = contacts.findIndex(({id}) => id === contactId);
   if (index === -1) {
     const error = new Error("Not found");
     error.status = 404;
     throw error;
   }
-  contacts[index] = {contactId, ...body};
+  contacts[index] = {id: contactId, ...body};
   await updateContactsList(contacts);
   return contacts[index];
 };

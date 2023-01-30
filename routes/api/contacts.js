@@ -2,7 +2,7 @@ const express = require("express");
 
 const contactsController = require("../../controllers/contacts");
 const { controllerExceptionWrapper } = require("../../helpers");
-const {addContactSchema} = require("../../helpers/schemas");
+const {addContactSchema, updateContactSchema} = require("../../helpers/schemas");
 const { validateBody } = require("../../middlewares");
 
 const router = express.Router();
@@ -29,7 +29,7 @@ router.delete(
 
 router.put(
   "/:contactId",
-  validateBody(addContactSchema),
+  validateBody(updateContactSchema),
   controllerExceptionWrapper(contactsController.update)
 );
 
