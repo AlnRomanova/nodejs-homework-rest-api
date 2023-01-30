@@ -1,87 +1,36 @@
 const express = require("express");
-const contactsRepository = require("../../models/contacts");
 
-const Joi = require('joi');
-const { createHttpException } = require("../../helpers");
-
-const addContactSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
-  email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
-    .required(),
-  phone: Joi.string().min(7).required(),
-});
-
-
-const updateContactSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
-  email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
-    .required(),
-  phone: Joi.string().min(7).required(),
-}).min(1);
-
-
+const contactsController = require("../../controllers/contacts");
+const { controllerExceptionWrapper } = require("../../helpers");
+const {addContactSchema} = require("../../helpers/schemas");
+const { validateBody } = require("../../middlewares");
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
-  try {
-    const result = await contactsRepository.listContacts();
-    res.json(result);
-  } catch (error) {
-    next(error)
-  }
-});
+router.get(
+  "/", 
+ controllerExceptionWrapper(contactsController.listContacts));
 
-router.get("/:contactId", async (req, res, next) => {
- try {
-  const {contactId} = req.params;
-  const result = await contactsRepository.getContactById(contactId);
-  res.json(result)
- } catch (error) {
-   next(error)
- }
-});
+router.get(
+  "/:contactId",
+  controllerExceptionWrapper(contactsController.getById)
+);
 
-router.post("/", async (req, res, next) => {
-  try {
-    const {error} = addContactSchema.validate(req.body)
-    if(error) {
-      throw createHttpException(404, error.message)
-    }
-    const {name, email, phone} = req.body;
-    const result = await contactsRepository.addContact({name, email, phone});
-    res.status(201).json(result)
-  }catch(error) {
-    next(error)
-  }
-});
+router.post(
+  "/",
+  validateBody(addContactSchema),
+  controllerExceptionWrapper(contactsController.add)
+);
 
-router.delete("/:contactId", async (req, res, next) => {
-  try {
-    const {contactId} = req.params;
-    await contactsRepository.removeContact(contactId);
-    res.status(204).send()
-   } catch (error) {
-     next(error)
-   }
-});
+router.delete(
+  "/:contactId",
+  controllerExceptionWrapper(contactsController.remove)
+);
 
-router.put("/:contactId", async (req, res, next) => {
-  try {
-    const {contactId} = req.params;
-    const {name, email, phone} = req.body;
-
-    const {error} = updateContactSchema.validate({name, email, phone})
-    if(error) {
-      throw createHttpException(404, error.message)
-    }
-    const result = await contactsRepository.updateContact(contactId, {name, email, phone});
-    res.json(result)
-  } catch(error) {
-    next(error)
-  }
-});
+router.put(
+  "/:contactId",
+  validateBody(addContactSchema),
+  controllerExceptionWrapper(contactsController.update)
+);
 
 module.exports = router;

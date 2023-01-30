@@ -28,18 +28,17 @@ const getContactById = async (contactId) => {
 };
 
 const removeContact = async (contactId) => {
-  try {
+ 
     const contacts = await listContacts();
     const index = contacts.findIndex((contact) => contact.id === contactId);
     if (index === -1) {
-      throw new Error("The contact is never exicted");
+      const error = new Error("Not found");
+    error.status = 404;
+    throw error;
     }
     contacts.splice(index, 1);
     await updateContactsList(contacts);
     return contacts;
-  } catch (error) {
-    console.log(error);
-  }
 };
 
 const addContact = async ({ name, email, phone }) => {
@@ -56,13 +55,15 @@ const addContact = async ({ name, email, phone }) => {
   return newContact;
 };
 
-const updateContact = async (contactId, data) => {
+const updateContact = async (contactId, body) => {
   const contacts = await listContacts();
   const index = contacts.findIndex((contact) => contact.id === contactId);
   if (index === -1) {
-    throw new Error("The contact is not found");
+    const error = new Error("Not found");
+    error.status = 404;
+    throw error;
   }
-  contacts[index] = { contactId, ...data};
+  contacts[index] = {contactId, ...body};
   await updateContactsList(contacts);
   return contacts[index];
 };
