@@ -1,10 +1,10 @@
-const shortid = require('shortid');
-const fsp = require('fs/promises');
-const path = require('path');
+const shortid = require("shortid");
+const fsp = require("fs/promises");
+const path = require("path");
 
-const contactsPath = path.join(__dirname, '../models/contacts.json');
+const contactsPath = path.join(__dirname, "../models/contacts.json");
 
-const updateContactsList = async contacts =>
+const updateContactsList = async (contacts) =>
   await fsp.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 
 const listContacts = async () => {
@@ -16,23 +16,23 @@ const listContacts = async () => {
   }
 };
 
-const getContactById = async contactId => {
-    const contacts = await listContacts();
-    const contact = contacts.find(contact => contact.id === contactId);
-    if (!contact) {
-      const error = new Error('Not found')
-      error.status = 404
-      throw error
-    }
-    return contact;
+const getContactById = async (contactId) => {
+  const contacts = await listContacts();
+  const contact = contacts.find((contact) => contact.id === contactId);
+  if (!contact) {
+    const error = new Error("Not found");
+    error.status = 404;
+    throw error;
+  }
+  return contact;
 };
 
-const removeContact = async contactId => {
+const removeContact = async (contactId) => {
   try {
     const contacts = await listContacts();
-    const index = contacts.findIndex(contacts => contacts.id === contactId);
+    const index = contacts.findIndex((contacts) => contacts.id === contactId);
     if (index === -1) {
-      throw new Error('The contact is never exicted');
+      throw new Error("The contact is never exicted");
     }
     contacts.splice(index, 1);
     await updateContactsList(contacts);
@@ -50,10 +50,23 @@ const addContact = async ({ name, email, phone }) => {
     email,
     phone,
   };
-  
+
   contacts.push(newContact);
   await updateContactsList(contacts);
   return newContact;
+};
+
+const updateContact = async (contactsId, data) => {
+  const contacts = await listContacts();
+
+  const index = contacts.findIndex((contacts) => contacts.id === contactsId);
+  if (index === -1) {
+    throw new Error("The contact is not found");
+  }
+
+  contacts[index] = { contactsId, ...data };
+
+  return contacts[index];
 };
 
 module.exports = {
@@ -61,4 +74,5 @@ module.exports = {
   getContactById,
   removeContact,
   addContact,
+  updateContact,
 };
