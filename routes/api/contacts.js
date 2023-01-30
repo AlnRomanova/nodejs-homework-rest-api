@@ -13,6 +13,16 @@ const addContactSchema = Joi.object({
 });
 
 
+const updateContactSchema = Joi.object({
+  name: Joi.string().min(3).max(30).required(),
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .required(),
+  phone: Joi.string().min(7).required(),
+}).min(1);
+
+
+
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
@@ -42,18 +52,36 @@ router.post("/", async (req, res, next) => {
     }
     const {name, email, phone} = req.body;
     const result = await contactsRepository.addContact({name, email, phone});
-    res.json(result)
+    res.status(201).json(result)
   }catch(error) {
     next(error)
   }
 });
 
 router.delete("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const {contactId} = req.params;
+    await contactsRepository.removeContact(contactId);
+    res.status(204).send()
+   } catch (error) {
+     next(error)
+   }
 });
 
 router.put("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const {contactId} = req.params;
+    const {name, email, phone} = req.body;
+
+    const {error} = updateContactSchema.validate({name, email, phone})
+    if(error) {
+      throw createHttpException(404, error.message)
+    }
+    const result = await contactsRepository.updateContact(contactId, {name, email, phone});
+    res.json(result)
+  } catch(error) {
+    next(error)
+  }
 });
 
 module.exports = router;

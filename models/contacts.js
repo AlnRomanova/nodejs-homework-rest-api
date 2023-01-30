@@ -30,7 +30,7 @@ const getContactById = async (contactId) => {
 const removeContact = async (contactId) => {
   try {
     const contacts = await listContacts();
-    const index = contacts.findIndex((contacts) => contacts.id === contactId);
+    const index = contacts.findIndex((contact) => contact.id === contactId);
     if (index === -1) {
       throw new Error("The contact is never exicted");
     }
@@ -56,16 +56,14 @@ const addContact = async ({ name, email, phone }) => {
   return newContact;
 };
 
-const updateContact = async (contactsId, data) => {
+const updateContact = async (contactId, data) => {
   const contacts = await listContacts();
-
-  const index = contacts.findIndex((contacts) => contacts.id === contactsId);
+  const index = contacts.findIndex((contact) => contact.id === contactId);
   if (index === -1) {
     throw new Error("The contact is not found");
   }
-
-  contacts[index] = { contactsId, ...data };
-
+  contacts[index] = { contactId, ...data};
+  await updateContactsList(contacts);
   return contacts[index];
 };
 
