@@ -8,12 +8,10 @@ const addContactSchema = Joi.object({
     phone: Joi.string().min(7).required(),
   });
 
-const updateContactSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
-  email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
-    .required(),
-  phone: Joi.string().min(7).required(),
+const updateContactSchema = Joi.object().keys({
+  name: Joi.string(),
+  email: Joi.string(),
+  phone: Joi.string(),
 }).min(1);
 
   module.exports = {

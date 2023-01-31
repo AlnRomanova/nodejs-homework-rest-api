@@ -1,6 +1,7 @@
 const shortid = require("shortid");
 const fsp = require("fs/promises");
 const path = require("path");
+const { createHttpException } = require("../helpers");
 
 const contactsPath = path.join(__dirname, "../models/contacts.json");
 
@@ -20,9 +21,7 @@ const getContactById = async (contactId) => {
   const contacts = await listContacts();
   const contact = contacts.find((contact) => contact.id === contactId);
   if (!contact) {
-    const error = new Error("Not found");
-    error.status = 404;
-    throw error;
+    throw createHttpException(404, "Not found");
   }
   return contact;
 };
@@ -32,9 +31,7 @@ const removeContact = async (contactId) => {
     const contacts = await listContacts();
     const index = contacts.findIndex((contact) => contact.id === contactId);
     if (index === -1) {
-      const error = new Error("Not found");
-    error.status = 404;
-    throw error;
+      throw createHttpException(404, "Not found");
     }
     contacts.splice(index, 1);
     await updateContactsList(contacts);
@@ -57,9 +54,7 @@ const updateContact = async (contactId, body) => {
   const contacts = await listContacts();
   const index = contacts.findIndex(({id}) => id === contactId);
   if (index === -1) {
-    const error = new Error("Not found");
-    error.status = 404;
-    throw error;
+    throw createHttpException(404, "Not found");
   }
   contacts[index] = {id: contactId, ...body};
   await updateContactsList(contacts);

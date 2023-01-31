@@ -1,18 +1,32 @@
-const { createHttpException } = require('../helpers');
+const { createHttpException } = require("../helpers");
 
 const validateBody = (schema) => {
   const fn = (req, res, next) => {
-    const { error } = schema.validate(req.body)
+    const { error } = schema.validate(req.body);
     if (error) {
-      next(createHttpException(400, error.message))
+      next(createHttpException(400, error.message));
     }
 
-    next()
-  }
+    next();
+  };
 
-  return fn
-}
+  return fn;
+};
+
+const updateValidateBody = (schema) => {
+  const fn = (req, res, next) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
+      next(createHttpException(400, "missing fields"));
+    }
+
+    next();
+  };
+
+  return fn;
+};
 
 module.exports = {
   validateBody,
-}
+  updateValidateBody,
+};
