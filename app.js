@@ -1,6 +1,20 @@
+const dotenv = require('dotenv')
+dotenv.config()
 const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
+const mongoose = require('mongoose')
+
+const {MONGO_CONNECTION_STRING: mongoConnectionString} = process.env;
+run();
+async function run () {
+  try {
+   await mongoose.connect(mongoConnectionString)
+  .then(() => console.log('Database connection successful'));
+  } catch (err) {
+    process.exit()
+  }
+}
 
 const contactsRouter = require('./routes/api/contacts')
 const { globalErrorHandler } = require('./middlewares')
