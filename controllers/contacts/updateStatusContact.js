@@ -1,12 +1,12 @@
 const { createHttpException } = require("../../helpers");
 const { ContactModal } = require("../../models");
 
-const update = async (req, res, next) => {
+const updateStatusContact = async (req, res, next) => {
   const { contactId } = req.params;
-  const { name, email, phone } = req.body;
+  const { favorite } = req.body;
   const result = await ContactModal.findByIdAndUpdate(
     contactId,
-    { name, email, phone },
+    { favorite},
     { new: true }
   );
   if (!result) {
@@ -16,5 +16,5 @@ const update = async (req, res, next) => {
 };
 
 module.exports = {
-  update,
+  updateStatusContact,
 };

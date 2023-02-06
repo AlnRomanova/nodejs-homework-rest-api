@@ -1,4 +1,4 @@
-const { ContactModal } = require("./listContacts");
+const { ContactModal } = require("../../models");
 
 const add = async (req, res, next) => {
       const result = await ContactModal.create(req.body);
@@ -7,5 +7,4 @@ const add = async (req, res, next) => {
 
   module.exports = {
     add,
-    ContactModal,
   }

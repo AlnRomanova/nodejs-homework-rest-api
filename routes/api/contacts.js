@@ -33,4 +33,10 @@ router.put(
   controllerExceptionWrapper(contactsController.update)
 );
 
+router.patch (
+  "/:contactId/favorite",
+  updateValidateBody(updateContactSchema),
+  controllerExceptionWrapper(contactsController.updateStatusContact)
+)
+
 module.exports = router;
