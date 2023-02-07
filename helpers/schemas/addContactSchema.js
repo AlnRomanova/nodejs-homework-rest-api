@@ -12,6 +12,7 @@ const updateContactSchema = Joi.object().keys({
   name: Joi.string(),
   email: Joi.string(),
   phone: Joi.string(),
+  favorite: Joi.bool(),
 }).min(1);
 
   module.exports = {
