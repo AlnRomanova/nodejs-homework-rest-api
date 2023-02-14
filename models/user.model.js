@@ -21,7 +21,13 @@ const userSchema = mongoose.Schema({
           enum: ["starter", "pro", "business"],
           default: "starter"
         },
-        token: String
+         token: String,
+        }, {
+          versionKey: false,
+          timestamps: {
+              createdAt: true,
+              updatedAt: false,
+          }
 })
 
 const UserModal = mongoose.model('users', userSchema);

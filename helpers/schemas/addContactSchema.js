@@ -15,7 +15,17 @@ const updateContactSchema = Joi.object().keys({
   favorite: Joi.bool(),
 }).min(1);
 
+const userSchema = Joi.object({
+  firstname: Joi.string().min(3).max(30).required(),
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .required(),
+  subscription: Joi.string().required(),
+  password: Joi.string().min(4).required(),
+});
+
   module.exports = {
     addContactSchema,
     updateContactSchema,
+    userSchema
   }

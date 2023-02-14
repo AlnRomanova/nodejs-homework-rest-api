@@ -26,6 +26,7 @@ const updateValidateBody = (schema) => {
   return fn;
 };
 
+
 module.exports = {
   validateBody,
   updateValidateBody,

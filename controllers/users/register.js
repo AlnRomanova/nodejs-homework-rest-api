@@ -1,7 +1,7 @@
-const { createHttpException } = require("../../../helpers");
-const { UserModal } = require("../../../models");
+const { createHttpException } = require("../../helpers");
+const { UserModal } = require("../../models");
 
-const signUp = async (req, res, next) => {
+const register = async (req, res, next) => {
   const { firstname, email, subscription, password } = req.body;
 
   const userModelorNull = await UserModal.findOne({ email });
@@ -24,5 +24,5 @@ const signUp = async (req, res, next) => {
 };
 
 module.exports = {
-  signUp,
+  register,
 };
