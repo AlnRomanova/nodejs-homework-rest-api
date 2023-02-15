@@ -4,6 +4,7 @@ const contactsController = require("../../controllers/contacts");
 const { controllerExceptionWrapper } = require("../../helpers");
 const {addContactSchema, updateContactSchema} = require("../../helpers/schemas");
 const { validateBody, updateValidateBody } = require("../../middlewares");
+const { authUser } = require("../../middlewares/auth-user-middleware");
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.get(
 
 router.post(
   "/",
+  authUser,
   validateBody(addContactSchema),
   controllerExceptionWrapper(contactsController.add)
 );
