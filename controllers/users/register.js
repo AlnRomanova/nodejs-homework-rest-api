@@ -1,26 +1,26 @@
 const { createHttpException } = require("../../helpers");
 const { UserModal } = require("../../models");
+const bcrypt = require('bcrypt');
 
 const register = async (req, res, next) => {
-  const { firstname, email, subscription, password } = req.body;
+  const { email, subscription, password } = req.body;
 
-  const userModelorNull = await UserModal.findOne({ email });
-  if (userModelorNull) {
-    throw createHttpException(409, "Email in use");
-  }
+  const passwordHash = await bcrypt.hash(password, 10)
   const userModal = await UserModal.create({
-    firstname,
     email,
-    password,
+    passwordHash,
     subscription,
+  }).catch(() => {
+     throw createHttpException(409, "Email in use");
   });
+
+
   res
     .status(201)
-    .json({
-      firstname: userModal.firstname,
+    .json({user: {
       email: userModal.email,
       subscription: userModal.subscription,
-    });
+    }});
 };
 
 module.exports = {
