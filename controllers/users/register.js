@@ -1,12 +1,12 @@
 const { createHttpException } = require("../../helpers");
-const { UserModal } = require("../../models");
+const { UserModel } = require("../../models");
 const bcrypt = require('bcrypt');
 
 const register = async (req, res, next) => {
   const { email, subscription, password } = req.body;
 
   const passwordHash = await bcrypt.hash(password, 10)
-  const userModal = await UserModal.create({
+  const userInstance = await UserModel.create({
     email,
     passwordHash,
     subscription,
@@ -18,8 +18,8 @@ const register = async (req, res, next) => {
   res
     .status(201)
     .json({user: {
-      email: userModal.email,
-      subscription: userModal.subscription,
+      email: userInstance.email,
+      subscription: userInstance.subscription,
     }});
 };
 

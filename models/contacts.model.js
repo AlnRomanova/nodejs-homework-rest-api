@@ -32,8 +32,8 @@ const contactSchema = mongoose.Schema({
     }
 })
 
-const ContactModal = mongoose.model('contacts', contactSchema);
+const ContactModel = mongoose.model('contacts', contactSchema);
 
 module.exports = {
-    ContactModal,
+    ContactModel,
 }

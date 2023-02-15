@@ -1,5 +1,5 @@
 const { createHttpException } = require("../../helpers");
-const { UserModal } = require("../../models");
+const { UserModel } = require("../../models");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {JWT_SECRET} = process.env;
@@ -7,20 +7,20 @@ const {JWT_SECRET} = process.env;
 
 const login = async (req, res, next) => {
     const { email, password } = req.body;
-    const userInstanceOrNull = await UserModal.findOne({ email }); 
+    const userInstance= await UserModel.findOne({ email }); 
 
-  if (userInstanceOrNull === null) {
+  if (userInstance === null) {
     throw createHttpException(401, "Email or password is wrong");
   }
- const isValidPassword = bcrypt.compare(password, userInstanceOrNull.passwordHash)
+ const isValidPassword = bcrypt.compare(password, userInstance.passwordHash)
  if (!isValidPassword) {
     throw createHttpException(401, "Email or password is wrong");
  }
- const token = jwt.sign({userId: userInstanceOrNull._id.toString()}, JWT_SECRET)
+ const token = jwt.sign({userId: userInstance._id.toString()}, JWT_SECRET)
 
   res.json({token, user: {
-    email: userInstanceOrNull.email,
-    subscription: userInstanceOrNull.subscription
+    email: userInstance.email,
+    subscription: userInstance.subscription
   } });
 };
 
