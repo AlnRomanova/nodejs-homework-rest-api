@@ -10,10 +10,12 @@ const router = express.Router();
 
 router.get(
   "/", 
+ authUser,
  controllerExceptionWrapper(contactsController.listContacts));
 
 router.get(
   "/:contactId",
+  authUser,
   controllerExceptionWrapper(contactsController.getById)
 );
 
@@ -26,17 +28,20 @@ router.post(
 
 router.delete(
   "/:contactId",
+  authUser,
   controllerExceptionWrapper(contactsController.remove)
 );
 
 router.put(
   "/:contactId",
+  authUser,
   updateValidateBody(updateContactSchema),
   controllerExceptionWrapper(contactsController.update)
 );
 
 router.patch (
   "/:contactId/favorite",
+  authUser,
   updateValidateBody(updateContactSchema),
   controllerExceptionWrapper(contactsController.updateStatusContact)
 )

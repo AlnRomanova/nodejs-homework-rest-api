@@ -1,42 +1,41 @@
-const { createHttpException } = require("../helpers")
-const jwt = require('jsonwebtoken');
-const { UserModal } = require("../models");
-
-const {JWT_SECRET: jwtSecret} = process.env;
+const { createHttpException } = require("../helpers");
+const { UserModel } = require("../models");
+const { verifyToken } = require("../services/jwt");
 
 const authUser = async (req, res, next) => {
   try {
-    const {authorization} = req.headers
-    console.log(authorization)
+    const { authorization } = req.headers;
+    console.log(authorization);
 
-    if(!authorization) {
-        throw createHttpException(401,"Not authorized")
+    if (!authorization) {
+      throw createHttpException(401, "Not authorized");
     }
 
-    const [bearer, token] = authorization.split()
+    const [bearer, token] = authorization.split();
     if (bearer !== "Bearer" || !token) {
-        throw createHttpException(401,"Not authorized")
+      throw createHttpException(401, "Not authorized");
     }
-  try {
-    const {userId} = jwt.verify(token, jwtSecret )
-    const userInstance = UserModal.findById(userId)
-    if (!userInstance) {
-        throw createHttpException(401,"Not authorized")
+    try {
+      const { userId, sessionKey } = verifyToken(token)
+      const userInstance = await UserModel.findById(userId)
+
+      if (!userInstance) {
+        throw createHttpException(401, "Not authorized")
+      }
+
+      if (userInstance.sessionKey !== sessionKey) {
+        throw createHttpException(401, "Not authorized")
+      }
+
+      req.user = userInstance
+    } catch (error) {
+      throw createHttpException(401, "Not authorized");
     }
-
-    res.user = userInstance
-
-    next()
-  } catch(error) {
-    throw createHttpException(401,"Not authorized")
+  } catch (error) {
+    next(error);
   }
-    
-
-  } catch(error) {
-   next(error)
-  }
-}
+};
 
 module.exports = {
-    authUser,
-}
+  authUser,
+};

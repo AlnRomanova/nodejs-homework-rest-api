@@ -1,8 +1,8 @@
 const { createHttpException } = require("../../helpers");
 const { UserModel } = require("../../models");
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = process.env;
+const { createAccessToken } = require("../../services/jwt");
+const crypto = require('crypto')
 
 
 const login = async (req, res, next) => {
@@ -12,11 +12,15 @@ const login = async (req, res, next) => {
   if (userInstance === null) {
     throw createHttpException(401, "Email or password is wrong");
   }
- const isValidPassword = bcrypt.compare(password, userInstance.passwordHash)
+ const isValidPassword = await bcrypt.compare(password, userInstance.passwordHash)
  if (!isValidPassword) {
     throw createHttpException(401, "Email or password is wrong");
  }
- const token = jwt.sign({userId: userInstance._id.toString()}, JWT_SECRET)
+
+ const sessionKey = crypto.randomUUID()
+
+ await UserModel.findOneAndUpdate({userId: userInstance._id.toString() }, { sessionKey }, { runValidators: true })
+ const token = createAccessToken({userId: userInstance._id.toString()}, sessionKey)
 
   res.json({token, user: {
     email: userInstance.email,

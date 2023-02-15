@@ -13,8 +13,7 @@ const register = async (req, res, next) => {
   }).catch(() => {
      throw createHttpException(409, "Email in use");
   });
-
-
+  
   res
     .status(201)
     .json({user: {

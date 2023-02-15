@@ -1,6 +1,6 @@
-const { addContactSchema, updateContactSchema } = require("./addContactSchema");
-const { userLoginSchema } = require("./userLoginSchema");
-const { userRegisterSchema } = require("./userRegisterShema");
+const { addContactSchema, updateContactSchema } = require("./add-contact-schema");
+const { userLoginSchema } = require("./user-login-schema");
+const { userRegisterSchema } = require("./user-register-shema");
 
 
 
