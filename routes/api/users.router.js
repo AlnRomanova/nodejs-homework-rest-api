@@ -23,5 +23,9 @@ router.post(
   authUser,
   controllerExceptionWrapper(userController.logout)
 );
-
+router.get(
+  "/current",
+  authUser,
+  controllerExceptionWrapper(userController.currentUser)
+);
 module.exports = router;
