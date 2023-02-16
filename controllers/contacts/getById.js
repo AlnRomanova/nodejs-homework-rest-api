@@ -1,15 +1,21 @@
 const { createHttpException } = require("../../helpers");
-const { ContactModal } = require("../../models");
+const { ContactModel } = require("../../models");
 
 const getById = async (req, res, next) => {
-     const {contactId} = req.params;
-     const result = await ContactModal.findById(contactId);
-     if (!result) {
-      throw createHttpException (404, 'Not found')
-     }
-     res.json(result)
-   }
+  const { contactId } = req.params;
+  const { _id } = req.user;
 
-   module.exports = {
-    getById,
-   }
+  try {
+    const result = await ContactModel.findOne({ _id: contactId, owner: _id });
+    if (!result) {
+      throw createHttpException(404, "Not found");
+    }
+    res.json(result);
+  } catch (error) {
+    throw createHttpException(404, "Not found");
+  }
+};
+
+module.exports = {
+  getById,
+};
