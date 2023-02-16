@@ -28,4 +28,5 @@ router.get(
   authUser,
   controllerExceptionWrapper(userController.currentUser)
 );
+
 module.exports = router;
