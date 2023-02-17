@@ -1,11 +1,13 @@
 const { createHttpException } = require("../../helpers");
-const { ContactModal } = require("../../models");
+const { ContactModel } = require("../../models");
 
 const update = async (req, res, next) => {
   const { contactId } = req.params;
   const { name, email, phone } = req.body;
-  const result = await ContactModal.findByIdAndUpdate(
-    contactId,
+  const {_id} = req.user;
+
+  const result = await ContactModel.findOneAndUpdate(
+    { _id: contactId, owner: _id },
     { name, email, phone },
     { new: true }
   );

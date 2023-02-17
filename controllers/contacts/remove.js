@@ -1,17 +1,21 @@
 const { createHttpException } = require("../../helpers");
-const { ContactModal } = require("../../models");
+const { ContactModel } = require("../../models");
 
 const remove = async (req, res, next) => {
-      const {contactId} = req.params;
-      const result = await ContactModal.findByIdAndDelete(contactId);
+  const { contactId } = req.params;
+  const { _id } = req.user;
 
-      if(!result) {
-        throw createHttpException (404, 'Not found');
-      }
-      res.send({"message": "contact deleted"})
+  const result = await ContactModel.findOneAndDelete({
+    _id: contactId,
+    owner: _id,
+  });
 
+  if (!result) {
+    throw createHttpException(404, "Not found");
   }
+  res.send({ message: "contact deleted" });
+};
 
-  module.exports = {
-    remove,
-  }
+module.exports = {
+  remove,
+};

@@ -20,6 +20,10 @@ const contactSchema = mongoose.Schema({
         type: Boolean,
         default: false,
       }, 
+      owner: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'user',
+      }
 }, {
     versionKey: false,
     timestamps: {
@@ -28,8 +32,8 @@ const contactSchema = mongoose.Schema({
     }
 })
 
-const ContactModal = mongoose.model('contacts', contactSchema);
+const ContactModel = mongoose.model('contacts', contactSchema);
 
 module.exports = {
-    ContactModal,
+    ContactModel,
 }
