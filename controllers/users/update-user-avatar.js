@@ -19,7 +19,6 @@ const upload = multer({ storage: multerConfig });
 const updateUserAvatar = async (req, res, next) => {
   try {
     const { _id } = req.user;
-
     const filePath = path.join("avatars", `${_id}.jpeg`);
 
     Jimp.read(req.file.path, function (err, image) {
@@ -28,15 +27,12 @@ const updateUserAvatar = async (req, res, next) => {
         .resize(250, 250)
         .write(path.join(path.resolve("./public/avatars"), `${_id}.jpeg`));
     });
-
     await UserModel.findOneAndUpdate(
       { _id: _id },
-      {
-        avatarURL: filePath,
-      }
+      { avatarURL: filePath}
     );
-
     res.json({ avatarURL: filePath });
+
   } catch (error) {
     throw createHttpException(401, "Not authorized");
   }
