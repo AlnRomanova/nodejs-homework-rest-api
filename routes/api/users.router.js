@@ -38,4 +38,10 @@ router.patch(
   controllerExceptionWrapper(userController.updateUserAvatar)
 );
 
+
+router.get(
+  "/verify/:verificationToken",
+  controllerExceptionWrapper(userController.verifyEmail)
+);
+
 module.exports = router;
