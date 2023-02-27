@@ -2,7 +2,7 @@ const express = require("express");
 const userController = require("../../controllers/users");
 const { upload } = require("../../controllers/users/update-user-avatar");
 const { controllerExceptionWrapper } = require("../../helpers");
-const { userRegisterSchema, userLoginSchema } = require("../../helpers/schemas");
+const { userRegisterSchema, userLoginSchema, userRepeatVerifySchema } = require("../../helpers/schemas");
 
 
 const { validateBody } = require("../../middlewares");
@@ -42,6 +42,12 @@ router.patch(
 router.get(
   "/verify/:verificationToken",
   controllerExceptionWrapper(userController.verifyEmail)
+);
+
+router.post(
+  "/verify",
+  validateBody(userRepeatVerifySchema),
+  controllerExceptionWrapper(userController.repeatVerifyEmail)
 );
 
 module.exports = router;
